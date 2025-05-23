@@ -1,0 +1,19 @@
+name: PR Check Workflow
+on:
+  pull_request:
+    branches: [ linux-6.12.y ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: show modified files
+      run: git diff --name-only HEAD^ HEAD
+    - name: mkdir
+      run: mkdir ./build
+    - name: config
+      run: make O=./build defconfig
+    - name: make
+      run: make O=./build vmlinux -j40
